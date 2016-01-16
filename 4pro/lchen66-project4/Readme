@@ -1,0 +1,16 @@
+Name : LieHuo Chen
+Email: lchen66@binghamton.edu
+
+Language : c++
+
+
+How to run and some sample output:
+
+1. start the server first using : ./test start_port_number interval_time num
+2. for the server, ./server port interval_time
+
+Possible problem:
+when the nodes is large(>200), there will be too many files errors sometimes,
+	 not everytime. the more nodes, the more often to happen.
+
+I have test the project on remote.cs.binghamton machines.

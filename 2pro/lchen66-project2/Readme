@@ -1,0 +1,24 @@
+Name : LieHuo Chen
+Email: lchen66@binghamton.edu
+
+Language : c++
+
+Main files : server.cpp, client.cpp, Makefile, sha256.h, Readme and the files generated
+by thrift.
+
+
+How to run and some sample output:
+
+1. start the server first using : ./server port_number
+2. based on the server machine, remote08 for example, start the client
+with required parameter (see the following example)
+
+Sample running and output:
+1.commands:
+run the command on remote08 : 1) ./server 3030 2) ./server 3031
+run the following commands in order:
+
+2: client
+./client_request 3030 write <filename>
+./client_request 3030 delete <filename>
+./client_request 3030 read <filename>

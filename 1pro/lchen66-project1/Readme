@@ -1,0 +1,97 @@
+Name : LieHuo Chen
+Email: lchen66@binghamton.edu
+
+Language : c++
+
+Main files : server.cpp, client.cpp, Makefile, md5.h, Readme and the files generated
+by thrift.
+
+specific : 
+    1. the files are store on disk with the name "owner +
+    filename" within the same directory where the server is running.
+    2. the meta information of the file are stored just in memory.
+
+Problems I meet:
+
+1. while write, if file is not exist, segment fault in client.
+   fixed! —— if the file is not exist in client local, do nothing for
+   server.
+2. writeFile, cannot save the files meta information because of const &
+   fixed! ——  in fact we do not need to change the parameter from
+   server, we just need to get the RFile, and then save the metaFile
+   in server memory.
+3. listOwnerFile and deletefile, when the file deleted, it still can
+   be shown in the list, and it also can be deleted again.
+   fixed! —— this error is from the server writeFile, when write old
+   file, after updating all the updata and delete value, it should be
+   saved in the coresponding meta file too.
+
+How to run and some sample output:
+
+1. start the server first using : ./server port_number
+2. based on the server machine, remote00 for example, start the client
+with required parameter (see the following example)
+
+Sample running and output:
+1.commands:
+run the command on remote00 : ./server 9090
+run the following commands in order:
+1. 
+./client remote00 9090 --operation  write --filename readtest --user  lchen66
+2.
+./client remote00 9090 --operation  read --filename readtest --user  lchen66
+3.
+./client remote00 9090 --operation  list --user  lchen66
+4.
+./client remote00 9090 --operation  delete --filename readtest --user  lchen66
+./client remote00 9090 --operation  delete --filename readtest --user  lchen66
+5.
+./client remote00 9090 --operation  list --user  lchen66
+6. 
+./client remote00 9090 --operation  write --filename filenotexisted --user  lchen66
+./client remote00 9090 --operation  write --filename readtest --user  lchen66
+7.
+./client remote00 9090 --operation  list --user  nosuchuser
+./client remote00 9090 --operation  read --filename nosuchfile --user  lchen66
+./client remote00 9090 --operation  read --filename readtest --user nouser
+
+
+output:
+on server side:
+remote00:~/lecture/dissystem/my_project/1pro/gen-cpp> ./server 
+writeFile Success!, owner is lchen66 filename is readtest
+readFile Success! owner is : lchen66 filename is : readtest
+List user name "lchen66" : file name "readtest"
+listOwnedFiles finished here for user "lchen66"
+deleteFile Success!, owner is lchen66 file name is readtest
+deleteFile Failed!, file not existed or deleted!, owner is lchen66 file name is readtestlistOwnedFiles finished here for user "lchen66"
+Thrift: Tue Sep 30 11:21:18 2014 TSimpleServer client died: No more data to read.
+writeFile Success!, owner is lchen66 filename is readtest
+listOwnedFiles Failed!, no such user named nosuchuser
+
+
+on client side:
+remote00:~/lecture/dissystem/my_project/1pro/gen-cpp>  ./client remote00 9090 --operation  write --filename readtest --user  lchen66
+{"1":{"i32":1}}
+remote00:~/lecture/dissystem/my_project/1pro/gen-cpp> ./client remote00 9090 --operation  read --filename readtest --user  lchen66
+{"2":{"str":"this is a test for write file.\nthis is a test for read file.\n\nand this is a test for delete file.\nin myproject/1pro/gen-cpp\n\n"}}
+remote00:~/lecture/dissystem/my_project/1pro/gen-cpp> ./client remote00 9090 --operation  list --user  lchen66
+["rec",1,{"1":{"str":"readtest"},"6":{"str":"lchen66"},"7":{"i32":125}}]
+remote00:~/lecture/dissystem/my_project/1pro/gen-cpp> ./client remote00 9090 --operation  delete --filename readtest --user  lchen66
+{"1":{"i32":1}}
+remote00:~/lecture/dissystem/my_project/1pro/gen-cpp> ./client remote00 9090 --operation  delete --filename readtest --user  lchen66
+{"1":{"str":"deleteFile Failed, throw exception because of file not existed or deleted while deleting"}}
+remote00:~/lecture/dissystem/my_project/1pro/gen-cpp> ./client remote00 9090 --operation  list --user  lchen66
+["rec",0]
+remote00:~/lecture/dissystem/my_project/1pro/gen-cpp> ./client remote00 9090 --operation  write --filename filenotexisted --user  lchen66
+remote00:~/lecture/dissystem/my_project/1pro/gen-cpp> ./client remote00 9090 --operation  write --filename readtest --user  lchen66
+{"1":{"i32":1}}
+remote00:~/lecture/dissystem/my_project/1pro/gen-cpp> ./client remote00 9090 --operation  list --user  nosuchuser
+{"1":{"str":"listOwnedFiles Failed!, throw exceptionbecause of no such user"}}
+remote00:~/lecture/dissystem/my_project/1pro/gen-cpp> ./client remote00 9090 --operation  read --filename nosuchfile --user  lchen66
+{"1":{"str":"readFile Failed! throw exception because of filename not existed!"}}
+remote00:~/lecture/dissystem/my_project/1pro/gen-cpp> ./client remote00 9090 --operation  read --filename readtest --user nouser
+{"1":{"str":"readFile Failed! throw exception because of user not existed!"}}
+remote00:~/lecture/dissystem/my_project/1pro/gen-cpp> 
+
+

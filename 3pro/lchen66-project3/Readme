@@ -1,0 +1,15 @@
+Name : LieHuo Chen
+Email: lchen66@binghamton.edu
+
+Language : c++
+
+Main files : server.cpp, client.cpp, Makefile, sha256.h, Readme and the files generated
+by thrift.
+
+
+How to run and some sample output:
+
+1. start the server first using : ./server port_number
+2. I did not provide the client file since it is just for test.
+
+I have test the project on remote.cs.binghamton machines.

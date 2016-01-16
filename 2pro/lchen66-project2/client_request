@@ -1,0 +1,6 @@
+#!/bin/bash
+
+if [ $# -eq 3 ]; then
+echo "execute command..."
+./client 128.226.180.167 "$1" --operation  "$2" --filename "$3" --user test
+fi
